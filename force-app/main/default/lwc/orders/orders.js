@@ -1,16 +1,31 @@
 import { LightningElement, api } from 'lwc';
-// TODO - récupérer la méthode apex permettant de faire ce calcul
+import getSumOrdersByAccount from '@salesforce/apex/OrdersController.getSumOrdersByAccount';
 
 export default class Orders extends LightningElement {
-
-    sumOrdersOfCurrentAccount;
     @api recordId;
+    sumOrdersOfCurrentAccount = 0;
 
     connectedCallback() {
         this.fetchSumOrders();
     }
 
     fetchSumOrders() {
-        // TODO - récupérer le montant total des Orders sur le compte avec la méthode apex
+        if (this.recordId) {
+            getSumOrdersByAccount({ accountId: this.recordId })
+                .then(result => {
+                    this.sumOrdersOfCurrentAccount = result;
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des commandes : ', error);
+                    this.sumOrdersOfCurrentAccount = 0;
+                });
+        } else {
+            console.warn('recordId non défini');
+            this.sumOrdersOfCurrentAccount = 0;
+        }
+    }
+
+    get hasError() {
+        return !this.sumOrdersOfCurrentAccount || this.sumOrdersOfCurrentAccount <= 0;
     }
 }
