@@ -20,7 +20,7 @@ public with sharing class OrderTriggerHandler {
             ];
 
             for (Account acc : accountsToUpdate) {
-                // Calcul du chiffre d'affaire total en tenant compte de l'existant
+                // Calcul du chiffre d'affaire total en tenant compte de l'existant test
                 //Decimal currentRevenue = acc.Chiffre_d_Affaire__c != null ? acc.Chiffre_d_Affaire__c : 0;
                 Decimal newRevenue = accountRevenueMap.get(acc.Id);
                 acc.Chiffre_d_Affaire__c = newRevenue;
