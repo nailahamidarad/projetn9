@@ -32,6 +32,7 @@ private class OrderTriggerHandlerTest {
         PricebookEntry pbe = TestDataFactory.createTestPricebookEntry(pricebook.Id, product.Id);
 //test3
 //test4
+//test5
         Order order = new Order(ShipmentCost__c = 0, AccountId = acc.Id, Status = 'Draft', Pricebook2Id = pricebook.Id, EffectiveDate = System.today());
         insert order;
 
