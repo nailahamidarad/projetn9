@@ -51,3 +51,12 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
+
+      - name: Deploy metadata for real on main
+        if: steps.validate.outcome == 'success' && github.ref == 'refs/heads/main'
+        run: |
+          if [ -f ".temp/package/package.xml" ]; then
+            sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --wait 10 --verbose
+          else
+            echo "No delta package to deploy."
+    
