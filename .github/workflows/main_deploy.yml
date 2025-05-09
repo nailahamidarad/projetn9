@@ -50,4 +50,4 @@ jobs:
       - name: Deploy metadata on main branch (check-only)
         if: github.ref == 'refs/heads/main'
         run: |
-          sfdx force:source:deploy -x .temp/package/package.xml -u occ -c -w 10 -v
+          sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
