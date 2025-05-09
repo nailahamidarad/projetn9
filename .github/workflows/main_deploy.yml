@@ -28,15 +28,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Salesforce CLI and sfdx-git-delta plugin
+      - name: Install SFDX CLI
+        uses: sfdx-actions/setup-sfdx@v1
+
+      - name: Install sfdx-git-delta plugin
         run: |
-          npm install -g @salesforce/cli@latest
-          echo "y" | npm install -g sfdx-git-delta@3.3.0
+          sfdx plugins:install sfdx-git-delta@3.3.0
 
       - name: Authenticate to Salesforce
         run: |
           echo "${{ secrets.SFDX_AUTH_URL }}" > authFile.txt
-          sf org login sfdx-url --sfdx-url-file authFile.txt --alias occ --set-default
+          sfdx auth:sfdxurl:store -f authFile.txt -a occ -d
 
       - name: Generate metadata delta from pull request
         run: |
@@ -48,4 +50,4 @@ jobs:
       - name: Deploy metadata on main branch (check-only)
         if: github.ref == 'refs/heads/main'
         run: |
-          sf project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
+          sfdx force:source:deploy -x .temp/package/package.xml -u occ -c -w 10 -v
