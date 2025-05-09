@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - main
-
   push:
     branches:
       - main
@@ -19,34 +18,34 @@ jobs:
         node-version: [18.x]
 
     steps:
-      - name: récupération code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install SFDX CLI and sfdx-git-delta plugin
+      - name: Install Salesforce CLI and sfdx-git-delta plugin
         run: |
           npm install -g @salesforce/cli@latest
-          echo "y" | npm install sfdx-git-delta@3.3.0 -g
+          echo "y" | npm install -g sfdx-git-delta@3.3.0
 
-      - name: 'Authentification Salesforce'
+      - name: Authenticate to Salesforce
         run: |
           echo "${{ secrets.SFDX_AUTH_URL }}" > authFile.txt
           sf org login sfdx-url --sfdx-url-file authFile.txt --alias occ --set-default
 
-      - name: 'Generate metadata delta pull request'
+      - name: Generate metadata delta from pull request
         run: |
           mkdir -p .temp
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git fetch origin main
           sfdx sgd:source:delta --to "HEAD" --from "origin/main" --output .temp --generate-delta
 
-      - name: 'Déployer les métadonnées sur la branch main'
+      - name: Deploy metadata on main branch (check-only)
         if: github.ref == 'refs/heads/main'
         run: |
           sf project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
