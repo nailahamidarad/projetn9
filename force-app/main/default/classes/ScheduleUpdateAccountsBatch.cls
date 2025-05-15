@@ -1,6 +1,6 @@
-public with sharing class ScheduleUpdateAccountsBatch {
+public with sharing class ScheduleUpdateAccountsBatch implements Schedulable {
 
-    public void ScheduleUpdateAccountsBatch() {
+    public void execute(SchedulableContext SC) {
         UpdateAllAccountsBatch batch = new UpdateAllAccountsBatch();
 
         Database.executeBatch(batch, 200);

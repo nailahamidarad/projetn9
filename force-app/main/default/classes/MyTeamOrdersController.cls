@@ -1,4 +1,4 @@
-public without sharing class OrdersController {
+public without sharing class MyTeamOrdersController {
 
     @AuraEnabled
     public static Decimal getSumOrdersByAccount(Id accountId) {
