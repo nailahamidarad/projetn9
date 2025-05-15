@@ -42,23 +42,20 @@ jobs:
           echo "${{ secrets.SFDX_AUTH_URL }}" > authFile.txt
           sfdx auth:sfdxurl:store -f authFile.txt -a occ -d
 
-      - name: Generate metadata delta from changes
+        - name: Generate metadata delta from pull request
         run: |
           mkdir -p .temp
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git fetch origin main
           sfdx sgd:source:delta --to "HEAD" --from "origin/main" --output .temp --generate-delta
 
-      - name: Check-only deploy (validation)
+      - name: Deploy metadata on main branch (check-only)
+        if: github.ref == 'refs/heads/main'
         run: |
-          if [ -f ".temp/package/package.xml" ]; then
-            sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
-          else
-            echo "No delta package to validate."
-        id: validate
+          sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
 
       - name: Deploy metadata for real on main
-        if: github.ref == 'refs/heads/main' && steps.validate.outcome == 'success'
+        if: steps.validate.outcome == 'success' && github.ref == 'refs/heads/main'
         run: |
           if [ -f ".temp/package/package.xml" ]; then
             sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --wait 10 --verbose
