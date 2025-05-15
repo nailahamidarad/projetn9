@@ -11,8 +11,8 @@ on:
       - main
 
 jobs:
-  sfdxvalidate:
-    name: "Run SFDX Validate"
+  sfdx-pipeline:
+    name: Validate and Deploy Metadata
     runs-on: ubuntu-latest
 
     strategy:
@@ -42,14 +42,14 @@ jobs:
           echo "${{ secrets.SFDX_AUTH_URL }}" > authFile.txt
           sfdx auth:sfdxurl:store -f authFile.txt -a occ -d
 
-      - name: Generate metadata delta from current changes
+      - name: Generate metadata delta from changes
         run: |
           mkdir -p .temp
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git fetch origin main
           sfdx sgd:source:delta --to "HEAD" --from "origin/main" --output .temp --generate-delta
 
-      - name: Validate deployment (check-only)
+      - name: Check-only deploy (validation)
         run: |
           if [ -f ".temp/package/package.xml" ]; then
             sfdx project deploy start --manifest .temp/package/package.xml --target-org occ --check-only --wait 10 --verbose
