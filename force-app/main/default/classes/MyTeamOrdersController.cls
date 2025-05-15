@@ -5,7 +5,7 @@ public without sharing class MyTeamOrdersController {
         if (accountId == null) {
             throw new AuraHandledException('L\'ID du compte ne peut pas être nul.');
         }
-
+//test
         AggregateResult groupedResults = [
             SELECT SUM(TotalAmount) total 
             FROM Order 
