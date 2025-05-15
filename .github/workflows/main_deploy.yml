@@ -1,5 +1,3 @@
-name: Deploy and Validate Metadata
-
 on:
   pull_request:
     branches:
@@ -11,8 +9,8 @@ on:
       - main
 
 jobs:
-  sfdx-pipeline:
-    name: Validate and Deploy Metadata
+  sfdxvalidate:
+    name: "Run SFDX Validate"
     runs-on: ubuntu-latest
 
     strategy:
@@ -42,7 +40,7 @@ jobs:
           echo "${{ secrets.SFDX_AUTH_URL }}" > authFile.txt
           sfdx auth:sfdxurl:store -f authFile.txt -a occ -d
 
-        - name: Generate metadata delta from pull request
+      - name: Generate metadata delta from pull request
         run: |
           mkdir -p .temp
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
