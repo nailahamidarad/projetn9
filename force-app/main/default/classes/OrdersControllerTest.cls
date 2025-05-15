@@ -1,5 +1,5 @@
 @isTest
-private class MyTeamOrdersControllerTest {
+private class OrdersControllerTest {
 
     @isTest
     static void testGetSumOrdersByAccount_ValidAccount() {

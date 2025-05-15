@@ -1,11 +1,10 @@
-public without sharing class MyTeamOrdersController {
+public without sharing class OrdersController {
 
     @AuraEnabled
     public static Decimal getSumOrdersByAccount(Id accountId) {
         if (accountId == null) {
             throw new AuraHandledException('L\'ID du compte ne peut pas être nul.');
         }
-//test
         AggregateResult groupedResults = [
             SELECT SUM(TotalAmount) total 
             FROM Order 
